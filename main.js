@@ -1,7 +1,10 @@
 
 var game_config = {
     width:1500,
-    height:1000
+    height:1000,
+    speed:4,
+    bg_width:2813,
+    bg_height:1000
 }
 
 var centreX = game_config.width/2;

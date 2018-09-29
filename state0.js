@@ -1,30 +1,39 @@
-var demo = {}, arrow;
+var demo = {}, rocket, speed=16;
 
 demo.state0 = function () {};
 
 demo.state0.prototype = {
     preload: function () {
         game.load.image('rocket', './assets/sprites/rocket.png');
+        game.load.image('background', './assets/sprites/space-background.png');
     },
     create: function () {
         game.stage.backgroundColor = '#DDDDDD';
         addEventListeners();
+        game.world.setBounds(0,0,2813, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-        arrow = game.add.sprite(game_config.width / 2, game_config.height / 2, 'rocket');
-        arrow.anchor.setTo(0.5, 0.5); //make centre the centre instead of top left
+        var bg = game.add.sprite(0,0,'background');
+        
+        rocket = game.add.sprite(centreX, centreY, 'rocket');
+        rocket.anchor.setTo(0.5, 0.5); 
+        rocket.scale.setTo(0.9,0.9);
+        game.physics.enable(rocket);
+        rocket.body.collideWorldBounds = true;
+        
+        game.camera.follow(rocket);
+        game.camera.deadzone = new Phaser.Rectangle(centreX - 300,0,600,1000)
     },
     update: function () {
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            arrow.x += game_config.speed;
+            rocket.x += speed;
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            arrow.x -= game_config.speed
+            rocket.x -= speed;
         }
         
          if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            arrow.y -= game_config.speed;
+            rocket.y -= speed;
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            arrow.y += game_config.speed
+            rocket.y += speed;
         }
     }
 }
