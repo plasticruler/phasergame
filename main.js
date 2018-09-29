@@ -1,4 +1,13 @@
-var game = new Phaser.Game(600, 400, Phaser.AUTO);
+
+var game_config = {
+    width:1500,
+    height:1000
+}
+
+var centreX = game_config.width/2;
+var centreY = game_config.height/2;
+var game = new Phaser.Game(game_config.width, game_config.height, Phaser.AUTO);
+
 game.state.add('state0', demo.state0);
 game.state.add('state1', demo.state1);
 game.state.add('state2', demo.state2);
