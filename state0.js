@@ -4,36 +4,52 @@ demo.state0 = function () {};
 
 demo.state0.prototype = {
     preload: function () {
-        game.load.image('rocket', './assets/sprites/rocket.png');
-        game.load.image('background', './assets/sprites/space-background.png');
+        game.load.tilemap('level','assets/tilemaps/level.json',null,Phaser.Tilemap.TILED_JSON);
+        game.load.image('tilemap','assets/tilemaps/tilemap.png');
+        game.load.spritesheet('rocket', './assets/spritesheets/rocket-animation.png',92,92);
+        
     },
     create: function () {
-        game.stage.backgroundColor = '#DDDDDD';
         addEventListeners();
+        game.stage.backgroundColor = '#DDDDDD';        
         game.world.setBounds(0,0,2813, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-        var bg = game.add.sprite(0,0,'background');
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        var map = game.add.tilemap('level');
+        map.addTilesetImage('tilemap');
+        var sky = map.createLayer('sky');
+        var floor = map.createLayer('floor');
         
         rocket = game.add.sprite(centreX, centreY, 'rocket');
         rocket.anchor.setTo(0.5, 0.5); 
         rocket.scale.setTo(0.9,0.9);
+        rocket.animations.add('fly',[0,1,2,3]);
+
         game.physics.enable(rocket);
         rocket.body.collideWorldBounds = true;
-        
         game.camera.follow(rocket);
-        game.camera.deadzone = new Phaser.Rectangle(centreX - 300,0,600,1000)
+        game.camera.deadzone = new Phaser.Rectangle(centreX - 300,0,600,1000);
+        
     },
     update: function () {
         if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
             rocket.x += speed;
+            rocket.animations.play('fly',8,true);
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
             rocket.x -= speed;
-        }
-        
-         if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+            rocket.animations.play('fly',8,true);            
+        }        
+        else if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
             rocket.y -= speed;
+            rocket.animations.play('fly',8,true);
         } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
             rocket.y += speed;
+            rocket.animations.play('fly',8,true);
+        }
+        else{
+            rocket.animations.stop('fly');
+            rocket.frame = 0;
         }
     }
 }
