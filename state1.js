@@ -6,7 +6,7 @@ demo.state1.prototype = {
     preload: function () {
         game.load.tilemap('level','assets/tilemaps/level.json',null,Phaser.Tilemap.TILED_JSON);
         game.load.image('tilemap','assets/tilemaps/tilemap.png');
-        game.load.spritesheet('rocket', './assets/spritesheets/rocket-animation.png',92,92);
+        game.load.spritesheet('rocket', './assets/sprites/rocket_off.png',110,246);
         
     },
     create: function () {
@@ -15,8 +15,6 @@ demo.state1.prototype = {
         game.world.setBounds(0,0,2813, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.physics.startSystem(Phaser.Physics.ARCADE);
-
-
 
         var map = game.add.tilemap('level');
         map.addTilesetImage('tilemap');
@@ -30,9 +28,10 @@ demo.state1.prototype = {
         rocket = game.add.sprite(centreX, centreY, 'rocket');
         rocket.anchor.setTo(0.5, 0.5); 
         
-        rocket.animations.add('fly',[0,1,2,3]);
-
         game.physics.enable(rocket);
+        rocket.body.gravity.y = 5000;
+        rocket.body.bounce.y = 0.3;
+        rocket.body.drag.x = 400;
         rocket.body.collideWorldBounds = true;
         game.camera.follow(rocket);
         game.camera.deadzone = new Phaser.Rectangle(centreX - 300,0,600,1000)
@@ -40,29 +39,28 @@ demo.state1.prototype = {
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function () {
-        game.physics.arcade.collide(rocket, floor);
-        game.physics.arcade.collide(rocket, sky);
+        game.physics.arcade.collide(rocket, floor, function(){
+            console.log('hitting floor');
+        });
+        game.physics.arcade.collide(rocket, sky, function(){
+            console.log('hitting balloon in sky.');
+        });
         if (cursors.up.isDown){
             rocket.body.velocity.y = -velocity;
-            rocket.animations.play('fly',8,true);
         }
         else if(cursors.down.isDown){
             rocket.body.velocity.y = velocity;
-            rocket.animations.play('fly',8,true);
         }     
 
         else if(cursors.left.isDown){
             rocket.body.velocity.x = -velocity;
-            rocket.animations.play('fly',8,true);
         }
         else if(cursors.right.isDown){
             rocket.body.velocity.x = velocity;
-            rocket.animations.play('fly',8,true);
         }
         else{
             rocket.body.velocity.x = 0;
-            rocket.body.velocity.y= =0;
-            rocket.animations.stop('fly');
+            rocket.body.velocity.y= 0;
             rocket.frame = 0;
         }
        }

@@ -9,7 +9,7 @@ var game_config = {
 
 var centreX = game_config.width/2;
 var centreY = game_config.height/2;
-var game = new Phaser.Game(game_config.width, game_config.height, Phaser.AUTO);
+var game = new Phaser.Game(game_config.width, game_config.height, Phaser.CANVAS);
 
 game.state.add('state0', demo.state0);
 game.state.add('state1', demo.state1);
