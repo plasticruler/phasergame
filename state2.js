@@ -1,15 +1,18 @@
 
-var cursors, velocity = 500, sky, floor,fx;
+var cursors, velocity = 500, sky, floor,fx,text;
 var balloons = [];
 
 demo.state2 = function () { };
 
 demo.state2.prototype = {
+    score:0,
     preload: function () {        
         game.load.spritesheet('balloonsprite', './assets/spritesheets/balloons.png', 82, 120);
         game.load.audio('plop','./assets/audio/plop.wav');
+        game.load.spritesheet('explosion','./assets/spritesheets/explosion.png',64,64);
     },
     create: function () {
+        this.score = 0;
         addEventListeners();
         game.stage.backgroundColor = '#DDDDDD';
         game.world.setBounds(0, 0, 2813, 1000);
@@ -19,9 +22,10 @@ demo.state2.prototype = {
         fx.addMarker('plop',0,0.468);
 
         fx.allowMultiple = true;
-
-
-        //there are 9 balloons in the sprite
+        var style = {font: "65px Arial", fill:"#000000", align:"center"};    
+        text = game.add.text(200,50,`Score:  ${this.score}`,style);
+        text.anchor.set(0.5);
+        //there are 10 balloons in the sprite
         for(var i=0; i < 10; i++){
             
             var balloon = game.add.sprite((i*85)+45,game.world.height-100,'balloonsprite');
@@ -29,61 +33,31 @@ demo.state2.prototype = {
             balloon.anchor.setTo(0.5,0.5);
             game.physics.enable(balloon);
             balloon.body.gravity.y=-Math.floor((Math.random() * 200) + 10);
-            balloon.body.colliderWorldBounds = true;
+            balloon.body.collideWorldBounds = true;
             balloon.inputEnabled = true;
-            balloon.events.onInputDown.add(balloonIsClicked,this);
-
+            balloon.events.onInputDown.add(this.balloonIsClicked, this,1);
             balloons.push(balloon);
         }
-        
-
-        /*rocket = game.add.sprite(centreX, centreY, 'rocket');
-        rocket.anchor.setTo(0.5, 0.5);
-        game.physics.enable(rocket);
-        rocket.body.gravity.y = 5000;
-        rocket.body.bounce.y = 0.3;
-        rocket.body.drag.x = 400;
-        rocket.body.collideWorldBounds = true;
-        
-        //game.camera.follow(rocket);
-        //game.camera.deadzone = new Phaser.Rectangle(centreX - 300, 0, 600, 1000)
-        */
         cursors = game.input.keyboard.createCursorKeys();
     },
+    balloonIsClicked: function(sprite){    
+        this.score++;
+        text.text =`Score:  ${this.score}`; 
+        fx.play('plop',1.0);        
+        var ex = game.add.sprite(sprite.x,sprite.y,'explosion');
+        ex.animations.add('explosion');
+        ex.play('explosion',16,true);
+        game.time.events.add(Phaser.Timer.SECOND*1,this.killSprite,this,ex);  
+        sprite.destroy();      
+    },    
+    killSprite:function(sprite){        
+        sprite.destroy();
+    },
     update: function () {
-        /*game.physics.arcade.collide(rocket, floor, function () {
-            console.log('hitting floor');
-        });
-        game.physics.arcade.collide(rocket, sky, function () {
-            console.log('hitting balloon in sky.');
-        });
-        if (cursors.up.isDown) {
-            rocket.body.velocity.y = -velocity;
-        }
-        else if (cursors.down.isDown) {
-            rocket.body.velocity.y = velocity;
-        }
-
-        else if (cursors.left.isDown) {
-            rocket.body.velocity.x = -velocity;
-        }
-        else if (cursors.right.isDown) {
-            rocket.body.velocity.x = velocity;
-        }
-        else {
-            rocket.body.velocity.x = 0;
-            rocket.body.velocity.y = 0;
-            rocket.frame = 0;
-        }*/
     }
 }
 
-function balloonIsClicked(sprite){
-    fx.play('plop',1.0);
-    sprite.destroy();
-}
-function changeState(e, stateNumber) {
-    console.log(e);
+function changeState(e, stateNumber) { 
     game.state.start('state' + stateNumber);
 }
 
