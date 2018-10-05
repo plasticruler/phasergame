@@ -35,16 +35,21 @@ demo.state2.prototype = {
             balloon.body.gravity.y=-Math.floor((Math.random() * 200) + 10);
             balloon.body.collideWorldBounds = true;
             balloon.inputEnabled = true;
-            balloon.events.onInputDown.add(this.balloonIsClicked, this,1);
+            balloon.isDead = false;
+            balloon.events.onInputDown.add(this.setBalloonToDestroyItself, this,1);
             balloons.push(balloon);
         }
         cursors = game.input.keyboard.createCursorKeys();
     },
-    balloonIsClicked: function(sprite){    
-        this.score++;
+    setBalloonToDestroyItself: function(sprite,registerScore){    
+        
+        console.log(registerScore);
+        if (registerScore==null || registerScore)
+            this.score++;
         text.text =`Score:  ${this.score}`; 
         fx.play('plop',1.0);        
-        var ex = game.add.sprite(sprite.x,sprite.y,'explosion');
+        var ex = game.add.sprite(registerScore?game.input.x:sprite.x,registerScore?game.input.y:sprite.y,'explosion');
+        ex.anchor.setTo(0.5,0.5);
         ex.animations.add('explosion');
         ex.play('explosion',16,true);
         game.time.events.add(Phaser.Timer.SECOND*1,this.killSprite,this,ex);  
@@ -54,6 +59,13 @@ demo.state2.prototype = {
         sprite.destroy();
     },
     update: function () {
+       for (var i=0; i < balloons.length; i++){
+           if (balloons[i].y-balloons[i].height/2 <=0 && !balloons[i].isDead)
+           {
+            this.setBalloonToDestroyItself(balloons[i],false);
+            balloons[i].isDead = true;
+           }
+       }
     }
 }
 
