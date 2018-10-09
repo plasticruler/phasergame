@@ -6,7 +6,7 @@ So I know absolutely nothing about Phaser but I'd like to see where this can go.
 - Use `piskel` for sprites.
 - `Inkscape` for vector graphics.
 
-## Outcomes
+## Small outcomes
 
 * Load a sprite-sheet to animate a body, control its movement through the keyboard. Have the sprite 'fall' under the effect of gravity.
 * Load a background larger than the viewport, and have the camera track the sprite causing the background to scroll. Basically restrict movement of the sprite within a bounded window.
