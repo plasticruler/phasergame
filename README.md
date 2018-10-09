@@ -14,5 +14,5 @@ So I know absolutely nothing about Phaser but I'd like to see where this can go.
 * Use a tween. Click the mouse and build an array of points. Get the balloon to follow the path defined by the points. Draw a line to visualise the path so defined. Change the interpolation scheme so that the lines are either smooth or curved.
 * Set object along the path of the moving balloon(s) and when the balloon is within range of a cannon (whose turret points to the closest balloon) fire a 'bullet'. Use different kinds of cannon.
 
-## Big outcome
+## Big ultimate outcome
 A tower-defence / resource-management game.
