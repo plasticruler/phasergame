@@ -1,17 +1,21 @@
 
-var cursors, velocity = 500, sky, floor,fx;
-var balloons = [];
-
+var cursors, velocity = 500, sky, floor,fx,text;
+var balloons = [],tween;
+var points = [];
 demo.state3 = function () { };
 
 demo.state3.prototype = {
+    path:null,
+    score:0,
     preload: function () {        
         game.load.spritesheet('balloonsprite', './assets/spritesheets/balloons.png', 82, 120);
         game.load.audio('plop','./assets/audio/plop.wav');
+        game.load.spritesheet('explosion','./assets/spritesheets/explosion.png',64,64);
     },
     create: function () {
+        this.score = 0;
         addEventListeners();
-        game.stage.backgroundColor = '#EEDDDD';
+        game.stage.backgroundColor = '#DDDDDD';
         game.world.setBounds(0, 0, 2813, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -19,71 +23,76 @@ demo.state3.prototype = {
         fx.addMarker('plop',0,0.468);
 
         fx.allowMultiple = true;
+        var style = {font: "20px Arial", fill:"#000000", align:"center"};    
+        text = game.add.text(200,50,`Use tween to make a sprite follow a path`,style);
+        text.anchor.set(0.5);
+       
+        var startX = 100, startY=100;
+        var balloon = game.add.sprite(startX, startY,'balloonsprite');
+        balloon.anchor.setTo(0.5,0.5);            
+ 
+        balloon.frame = 0;
+        balloon.inputEnabled = true;
+        balloon.events.onInputDown.add(this.setBalloonToDestroyItself, this,1);
 
-
-        //there are 9 balloons in the sprite
-        for(var i=0; i < 10; i++){
-            
-            var balloon = game.add.sprite((i*85)+45,game.world.height-100,'balloonsprite');
-            balloon.frame = i;
-            balloon.anchor.setTo(0.5,0.5);
-            game.physics.enable(balloon);
-            balloon.body.gravity.y=-Math.floor((Math.random() * 200) + 10);
-            balloon.body.collideWorldBounds = true;
-            balloon.inputEnabled = true;
-            balloon.events.onInputDown.add(balloonIsClicked,this);
-
-            balloons.push(balloon);
-        }
+        //add the tween / path
+        tween = game.add.tween(balloon).to({x:points.map(function(x){return x.x;}),y:points.map(function(x){return x.y;})},4000,"Sine.easeInOut",true,-1,false);
         
-
-        /*rocket = game.add.sprite(centreX, centreY, 'rocket');
-        rocket.anchor.setTo(0.5, 0.5);
-        game.physics.enable(rocket);
-        rocket.body.gravity.y = 5000;
-        rocket.body.bounce.y = 0.3;
-        rocket.body.drag.x = 400;
-        rocket.body.collideWorldBounds = true;
-        
-        //game.camera.follow(rocket);
-        //game.camera.deadzone = new Phaser.Rectangle(centreX - 300, 0, 600, 1000)
-        */
         cursors = game.input.keyboard.createCursorKeys();
+
+
+        game.input.onUp.add(function(){            
+            points.push({x:game.input.x,y:game.input.y});
+            tween.manager.remove(tween);
+            tween = game.add.tween(balloon).to({x:points.map(function(x){return x.x;}),y:points.map(function(x){return x.y;})},4000,"Sine.easeInOut",true,-1,false);
+        });
+    },
+    setBalloonToDestroyItself: function(sprite,registerScore){            
+        
+        if (registerScore==null || registerScore)
+            this.score++;
+        text.text =`Score:  ${this.score}`; 
+        fx.play('plop',1.0);        
+        var ex = game.add.sprite(registerScore?game.input.x:sprite.x,registerScore?game.input.y:sprite.y,'explosion');
+        ex.anchor.setTo(0.5,0.5);
+        ex.animations.add('explosion');
+        ex.play('explosion',16,true);
+        game.time.events.add(Phaser.Timer.SECOND*1,this.killSprite,this,ex);  
+        sprite.destroy();      
+    },    
+    killSprite:function(sprite){        
+        sprite.destroy();
     },
     update: function () {
-        /*game.physics.arcade.collide(rocket, floor, function () {
-            console.log('hitting floor');
-        });
-        game.physics.arcade.collide(rocket, sky, function () {
-            console.log('hitting balloon in sky.');
-        });
-        if (cursors.up.isDown) {
-            rocket.body.velocity.y = -velocity;
-        }
-        else if (cursors.down.isDown) {
-            rocket.body.velocity.y = velocity;
-        }
-
-        else if (cursors.left.isDown) {
-            rocket.body.velocity.x = -velocity;
-        }
-        else if (cursors.right.isDown) {
-            rocket.body.velocity.x = velocity;
-        }
-        else {
-            rocket.body.velocity.x = 0;
-            rocket.body.velocity.y = 0;
-            rocket.frame = 0;
-        }*/
+       for (var i=0; i < balloons.length; i++){
+           if (balloons[i].y-balloons[i].height/2 <=0 && !balloons[i].isDead)
+           {
+            this.setBalloonToDestroyItself(balloons[i],false);
+            balloons[i].isDead = true;
+           }
+       }
+       var graphics = game.add.graphics(0,0);
+       graphics.lineStyle(0);
+       
+       //draw circles where the mouse was clicked to show path the balloon will follow
+       points.forEach(function(x){
+        graphics.beginFill('#fefefe',0.5);
+        
+        graphics.drawCircle(x.x,x.y,10);        
+        graphics.endFill();        
+       });
+       if (points.length>0)
+        graphics.moveTo(points[0].x,points[0].y);               
+       points.forEach(function(x){
+        graphics.beginFill('#fefefe',0.5);
+        graphics.lineStyle(2, '#fefefe', 1);
+        graphics.lineTo(x.x,x.y);
+        graphics.endFill();
+       });
     }
 }
 
-function balloonIsClicked(sprite){
-    fx.play('plop',1.0);
-    sprite.destroy();
-}
-function changeState(e, stateNumber) {
-    console.log(e);
+function changeState(e, stateNumber) { 
     game.state.start('state' + stateNumber);
 }
 
