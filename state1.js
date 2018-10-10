@@ -41,10 +41,8 @@ demo.state1.prototype = {
     },
     update: function () {
         game.physics.arcade.collide(rocket, floor, function () {
-            console.log('hitting floor');
         });
         game.physics.arcade.collide(rocket, sky, function () {
-            console.log('hitting balloon in sky.');
         });
         if (cursors.up.isDown) {
             rocket.body.velocity.y = -velocity;
