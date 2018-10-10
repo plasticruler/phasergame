@@ -1,6 +1,6 @@
 var cursors, velocity = 500,
     sky, floor, fx, text, cannon,balloon;
-var balloons = [],
+var balloons = [], cannons = [],
     tween;
 
 var MILLISECONDS_TO_TRAVERSE_PATH = 10000;
@@ -14,7 +14,7 @@ demo.state4.prototype = {
         game.load.audio('plop', './assets/audio/plop.wav');
         game.load.spritesheet('explosion', './assets/spritesheets/explosion.png', 64, 64);
         game.load.json('track1', './assets/tracks/track1.json');
-        game.load.spritesheet('cannon','./assets/sprites/cannon-up.png');
+        game.load.spritesheet('tw-assets','./assets/spritesheets/tw-assets.png',100,100);
     },
     create: function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -37,25 +37,27 @@ demo.state4.prototype = {
         };
         text = game.add.text(200, 50, `Use tween to make a sprite follow a path`, style);
         text.anchor.set(0.5);
-        points = game.cache.getJSON('track1');
+        var levelData = game.cache.getJSON('track1');
         balloon = game.add.sprite(100, 100, 'balloonsprite');
         balloon.anchor.setTo(0.5, 0.5);
-      
-        cannon = game.add.sprite(points[6].x, points[6].y+100, 'cannon');
-        cannon.anchor.setTo(0.5, 0.5);
-        cannon.scale.setTo(0.1, 0.1);
+        console.log(levelData);
+        levelData.cannonLocations.forEach(function(l){
+            var c = game.add.sprite(l.position.x, l.position.y, 'tw-assets');
+            c.frame=0;
+            c.anchor.setTo(0.5, 0.5);
+            c.scale.setTo(1, 1);    
+            cannons.push(c);
+        });
 
         balloon.events.onInputDown.add(this.setBalloonToDestroyItself, this, 1);
 
-        cursors = game.input.keyboard.createCursorKeys();
-
-        
+        cursors = game.input.keyboard.createCursorKeys();        
 
         tween = game.add.tween(balloon).to({
-            x: points.map(function (x) {
+            x: levelData.path.map(function (x) {
                 return x.x;
             }),
-            y: points.map(function (x) {
+            y: levelData.path.map(function (x) {
                 return x.y;
             })
         }, MILLISECONDS_TO_TRAVERSE_PATH, "Sine.easeInOut", true, -1, true);
@@ -63,15 +65,15 @@ demo.state4.prototype = {
         var graphics = game.add.graphics(0, 0);
         graphics.lineStyle(0);
 
-        points.forEach(function (x) {
+        levelData.path.forEach(function (x) {
             graphics.beginFill('#fefefe', 0.5);
             graphics.drawCircle(x.x, x.y, 10);
             graphics.endFill();
         });
 
-        if (points.length > 0)
-            graphics.moveTo(points[0].x, points[0].y);
-        points.forEach(function (x) {
+        if (levelData.path.length > 0)
+            graphics.moveTo(levelData.path[0].x, levelData.path[0].y);
+            levelData.path.forEach(function (x) {
             graphics.beginFill('#fefefe', 0.5);
             graphics.lineStyle(2, '#fefefe', 1);
             graphics.lineTo(x.x, x.y);
@@ -96,11 +98,7 @@ demo.state4.prototype = {
     },
     killSprite: function (sprite) {
         sprite.destroy();
-    },
-    render: function(){
-        game.debug.spriteInfo(cannon, 32,100);
-        
-    },
+    },   
     update: function () {
         for (var i = 0; i < balloons.length; i++) {
             if (balloons[i].y - balloons[i].height / 2 <= 0 && !balloons[i].isDead) {
@@ -108,8 +106,13 @@ demo.state4.prototype = {
                 balloons[i].isDead = true;
             }
         }
-        if (game.physics.arcade.distanceBetween(balloon, cannon) < 200)
-            cannon.rotation = game.physics.arcade.angleBetween(cannon,balloon)+1.6; //the graphic faces upward so compensate the rotation angle
+
+
+        cannons.forEach(function(c){
+            if (game.physics.arcade.distanceBetween(balloon, c) < 200)
+            c.rotation = game.physics.arcade.angleBetween(c,balloon)+1.6;
+        });
+         
         //https://www.codecaptain.io/blog/game-development/shooting-bullets-using-phaser-groups/518
         //bullets now
     }
