@@ -1,18 +1,18 @@
-
-var cursors, velocity = 500,sky,floor;
+var cursors, velocity = 500,
+    sky, floor;
 demo.state1 = function () {};
 
 demo.state1.prototype = {
     preload: function () {
-        game.load.tilemap('level','assets/tilemaps/level.json',null,Phaser.Tilemap.TILED_JSON);
-        game.load.image('tilemap','assets/tilemaps/tilemap.png');
-        game.load.spritesheet('rocket', './assets/sprites/rocket_off.png',110,246);
-        
+        game.load.tilemap('level', 'assets/tilemaps/level.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('tilemap', 'assets/tilemaps/tilemap.png');
+        game.load.spritesheet('rocket', './assets/sprites/rocket_off.png', 110, 246);
+
     },
     create: function () {
         addEventListeners();
-        game.stage.backgroundColor = '#DDDDDD';        
-        game.world.setBounds(0,0,2813, 1000);
+        game.stage.backgroundColor = '#DDDDDD';
+        game.world.setBounds(0, 0, 2813, 1000);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -20,54 +20,51 @@ demo.state1.prototype = {
         map.addTilesetImage('tilemap');
         sky = map.createLayer('sky');
         floor = map.createLayer('floor');
-        
+
         //set collisions
-        map.setCollisionBetween(1,1,true,'floor');
-        map.setCollisionBetween(4,4,true,'sky');
+        map.setCollisionBetween(1, 1, true, 'floor');
+        map.setCollisionBetween(4, 4, true, 'sky');
 
         rocket = game.add.sprite(centreX, centreY, 'rocket');
-        rocket.anchor.setTo(0.5, 0.5); 
-        
+        rocket.anchor.setTo(0.5, 0.5);
+        rocket.scale.setTo(0.5,0.5);
+
         game.physics.enable(rocket);
         rocket.body.gravity.y = 5000;
         rocket.body.bounce.y = 0.3;
         rocket.body.drag.x = 400;
         rocket.body.collideWorldBounds = true;
         game.camera.follow(rocket);
-        game.camera.deadzone = new Phaser.Rectangle(centreX - 300,0,600,1000)
+        game.camera.deadzone = new Phaser.Rectangle(centreX - 300, 0, 600, 1000)
 
         cursors = game.input.keyboard.createCursorKeys();
     },
     update: function () {
-        game.physics.arcade.collide(rocket, floor, function(){
+        game.physics.arcade.collide(rocket, floor, function () {
             console.log('hitting floor');
         });
-        game.physics.arcade.collide(rocket, sky, function(){
+        game.physics.arcade.collide(rocket, sky, function () {
             console.log('hitting balloon in sky.');
         });
-        if (cursors.up.isDown){
+        if (cursors.up.isDown) {
             rocket.body.velocity.y = -velocity;
-        }
-        else if(cursors.down.isDown){
+        } else if (cursors.down.isDown) {
             rocket.body.velocity.y = velocity;
-        }     
-
-        else if(cursors.left.isDown){
+        } else if (cursors.left.isDown) {
             rocket.body.velocity.x = -velocity;
-        }
-        else if(cursors.right.isDown){
+        } else if (cursors.right.isDown) {
             rocket.body.velocity.x = velocity;
-        }
-        else{
+        } else {
             rocket.body.velocity.x = 0;
-            rocket.body.velocity.y= 0;
+            rocket.body.velocity.y = 0;
             rocket.frame = 0;
         }
-       }
     }
+}
 
-function changeState(e, stateNumber) {  
-    game.state.start('state' + stateNumber);
+function changeState(e, stateNumber) {
+    game.state.start(`state${stateNumber}`);
+    console.log(`state switched to '${stateNumber}'`);
 }
 
 function addKeyCallback(key, fn, args) {
