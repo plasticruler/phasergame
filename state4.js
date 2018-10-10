@@ -35,7 +35,7 @@ demo.state4.prototype = {
             fill: "#000000",
             align: "center"
         };
-        text = game.add.text(200, 50, `Use tween to make a sprite follow a path`, style);
+        text = game.add.text(200, 50, `Use tween to make a sprite follow a path loaded from a JSON file. Also place cannons by configuration data.`, style);
         text.anchor.set(0.5);
         var levelData = game.cache.getJSON('track1');
         balloon = game.add.sprite(100, 100, 'balloonsprite');

@@ -32,7 +32,7 @@ demo.state3.prototype = {
             fill: "#000000",
             align: "center"
         };
-        text = game.add.text(200, 50, `Use tween to make a sprite follow a path`, style);
+        text = game.add.text(200, 50, `Use tween to make a sprite follow a path created by clicking the mouse.`, style);
         text.anchor.set(0.5);
 
         var startX = 100,
