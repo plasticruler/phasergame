@@ -112,7 +112,7 @@ demo.state4.prototype = {
         cannonConfig = cannonConfigurations.filter(function(c){return c.id==cannon.weaponId})[0];
         if (game.time.now > cannon.nextFire){            
             cannon.nextFire = game.time.now + cannonConfig.fireRate*1000;            
-            var w = game.add.weapon(1,'tw-assets',cannonConfig.spriteId);
+            var w = game.add.weapon(1,'tw-assets',4);
             w.bullets.setAll('scale.x',cannonConfig.scaleX);
             w.bullets.setAll('scale.y',cannonConfig.scaleY);
             w.trackSprite(cannon,0,0,true); //basically from where to shoot with an offset for the turret

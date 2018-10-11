@@ -1,5 +1,7 @@
 # Silly Phaser game
 
+![alt tag](https://raw.githubusercontent.com/plasticruler/phasergame/master/towers.gif)
+
 So I know absolutely nothing about Phaser but I'd like to see where this can go. And there are better ways of going about it I get it. But while I'm learning I would like forgo optimization and perfection in favour of usable building blocks. Press `1`,`2`,`3`,...,`9` to switch game states. 
 
 ## Asset 
