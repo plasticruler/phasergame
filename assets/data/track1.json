@@ -95,23 +95,37 @@
     }],
     "cannonLocations": [
         {
-        "class": 1,
+        "id": 1,        
         "position": {
             "x": 200,
             "y": 600
         }        
     },
     {
-        "class": 1,
+        "id": 2,        
         "position": {
             "x": 800,
             "y": 600
         }
     },
     {
-        "class": 1,
+        "id": 3,
+        "position": {
+            "x": 1150,
+            "y": 300
+        }
+    },
+    {
+        "id": 3,
         "position": {
             "x": 950,
+            "y": 300
+        }
+    },
+    {
+        "id": 3,
+        "position": {
+            "x": 550,
             "y": 300
         }
     }
