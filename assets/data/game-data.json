@@ -16,10 +16,10 @@
         "predecessor":0,
         "name":"faster-poke",
         "cost":200,
-        "fireRate":2,
+        "fireRate":1,
         "spriteId":1,
-        "weaponSpeed":750,
-        "range":300,
+        "weaponSpeed":1000,
+        "range":150,
         "scaleX":0.3,
         "scaleY":0.3       
     },

@@ -111,7 +111,7 @@ demo.state4.prototype = {
     fire: function(cannon,target){
         cannonConfig = cannonConfigurations.filter(function(c){return c.id==cannon.weaponId})[0];
         if (game.time.now > cannon.nextFire){            
-            cannon.nextFire = game.time.now + cannonConfig.fireRate*1000;            
+            cannon.nextFire = game.time.now + 1000/cannonConfig.fireRate;            
             var w = game.add.weapon(1,'tw-assets',4);
             w.bullets.setAll('scale.x',cannonConfig.scaleX);
             w.bullets.setAll('scale.y',cannonConfig.scaleY);
