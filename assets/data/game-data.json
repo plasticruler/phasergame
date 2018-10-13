@@ -30,7 +30,7 @@
         "cost":400,
         "fireRate":0.5,
         "spriteId":2,
-        "weaponSpeed":350,
+        "weaponSpeed":1350,
         "range":500,
         "scaleX":0.3,
         "scaleY":0.3       

@@ -9,7 +9,7 @@ var balloons = [],
     bullets, cannonConfigurations;
 
 var MILLISECONDS_TO_TRAVERSE_PATH = 10000;
-var BALLOON_COUNT = 5;
+var BALLOON_COUNT = 15;
 demo.state5 = function () {};
 
 demo.state5.prototype = {
@@ -111,6 +111,8 @@ demo.state5.prototype = {
         weapon = game.add.weapon(20, 'tw-assets', 4);
         weapon.bullets.setAll('scale.x', 0.3);
         weapon.bullets.setAll('scale.y', 0.3);
+        weapon.bullets.setAll('anchor.x', 0.5);
+        weapon.bullets.setAll('anchor.y', 0.5);
         weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     },
     setBalloonToDestroyItself: function (sprite) {
