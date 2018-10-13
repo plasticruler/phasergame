@@ -8,7 +8,7 @@ So I know absolutely nothing about Phaser but I'd like to see where this can go.
 - Use `piskel` for sprites.
 - `Inkscape` for vector graphics.
 
-## Small outcomes
+## Small outcomes (in sequence of acquired skill)
 
 * Load a sprite-sheet to animate a body, control its movement through the keyboard. Have the sprite 'fall' under the effect of gravity.
 * Load a background larger than the viewport, and have the camera track the sprite causing the background to scroll. Basically restrict movement of the sprite within a bounded window.
@@ -16,6 +16,7 @@ So I know absolutely nothing about Phaser but I'd like to see where this can go.
 * Use a tween. Click the mouse and build an array of points. Get the balloon to follow the path defined by the points. Draw a line to visualise the path so defined. 
 * Load level data from a JSON file. Set object(s) along the path of the moving balloon(s) and when the balloon is within range of a cannon (whose turret points to the closest balloon) fire a 'bullet'. 
 * Load weapon configuration from a JSON file. Range, rate of fire and sprite should be configurable. Refer to cannons by id and load the rest by a lookup.
+* Cannons fire bullets based on their configuration data. Multiple balloons travelling at different speeds along the track are 'popped' when a bullet collides with them. An explosion plays and they are then removed from the board. The score is updated.
 
 ## Big ultimate outcome
 A tower-defence / resource-management game.
