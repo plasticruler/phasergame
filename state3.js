@@ -22,7 +22,7 @@ demo.state3.prototype = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
-        
+
         fx = game.add.audio('plop');
         fx.addMarker('plop', 0, 0.468);
 
@@ -55,7 +55,7 @@ demo.state3.prototype = {
         }, 4000, "Sine.easeInOut", true, -1, false);
 
         cursors = game.input.keyboard.createCursorKeys();
-        
+
         game.input.onUp.add(function () {
             points.push({
                 x: game.input.x,
@@ -73,7 +73,9 @@ demo.state3.prototype = {
         });
     },
     setBalloonToDestroyItself: function (sprite, registerScore) {
-
+        if (sprite.isDead) {
+            return;
+        };
         if (registerScore == null || registerScore)
             this.score++;
         text.text = `Score:  ${this.score}`;
@@ -81,12 +83,8 @@ demo.state3.prototype = {
         var ex = game.add.sprite(registerScore ? game.input.x : sprite.x, registerScore ? game.input.y : sprite.y, 'explosion');
         ex.anchor.setTo(0.5, 0.5);
         ex.animations.add('explosion');
-        ex.play('explosion', 16, true);
-        game.time.events.add(Phaser.Timer.SECOND * 1, this.killSprite, this, ex);
-        sprite.destroy();
-    },
-    killSprite: function (sprite) {
-        sprite.destroy();
+        ex.play('explosion', 16);
+       sprite.destroy();
     },
     update: function () {
         for (var i = 0; i < balloons.length; i++) {

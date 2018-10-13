@@ -24,7 +24,7 @@ demo.state0.prototype = {
 
         rocket = game.add.sprite(centreX, centreY, 'rocket');
         rocket.anchor.setTo(0.5, 0.5);
-        
+
         rocket.animations.add('fly', [0, 1, 2, 3]);
 
         game.physics.enable(rocket);
